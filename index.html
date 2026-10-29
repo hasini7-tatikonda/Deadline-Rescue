@@ -1,0 +1,312 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7faf8">
+  <title>Deadline Rescue | Your workload, under control</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#">
+        <span class="brand-icon">✳</span>
+        <span>Deadline<span class="brand-light">Rescue</span></span>
+      </a>
+
+      <p class="sidebar-label">WORKSPACE</p>
+      <a class="nav-link active" href="#dashboard">▦ <span>Dashboard</span></a>
+      <a class="nav-link" href="#add-work">＋ <span>Add workload</span></a>
+      <a class="nav-link" href="#planner">◷ <span>Study planner</span></a>
+
+      <div class="sidebar-note">
+        <span class="note-icon">✦</span>
+        <h3>One thing at a time.</h3>
+        <p>You don't have to solve the whole week right now. Just find your next step.</p>
+      </div>
+
+      <div class="sidebar-footer">
+        <span class="status-dot"></span>
+        Saved locally on this device
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">YOUR PERSONAL WORKLOAD PLANNER</p>
+          <h1>Let's get things <span>under control.</span></h1>
+          <p class="subtitle">A clearer view of everything on your plate.</p>
+        </div>
+        <div class="today-badge">
+          <span>◷</span>
+          <span id="todayLabel">Your planner</span>
+        </div>
+      </header>
+
+      <section class="stats-grid" id="dashboard">
+        <article class="stat-card">
+          <span class="stat-icon mint">▦</span>
+          <p>Open tasks</p>
+          <h2 id="openCount">0</h2>
+          <small>Still on your plate</small>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon rose">!</span>
+          <p>Need attention</p>
+          <h2 id="urgentCount">0</h2>
+          <small>Overdue or due soon</small>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon lilac">✓</span>
+          <p>Completed</p>
+          <h2 id="doneCount">0</h2>
+          <small>Progress you've made</small>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon peach">◷</span>
+          <p>Estimated workload</p>
+          <h2 id="hoursLeft">0h</h2>
+          <small>Hours remaining</small>
+        </article>
+      </section>
+
+      <section class="panel add-panel" id="add-work">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">START HERE</p>
+            <h2>What's on your plate?</h2>
+            <p class="muted">Choose whichever way feels easier today.</p>
+          </div>
+        </div>
+
+        <div class="entry-tabs">
+          <button class="entry-tab active" type="button" data-mode="text">
+            ✎ Describe in your own words
+          </button>
+          <button class="entry-tab" type="button" data-mode="manual">
+            ＋ Add a task manually
+          </button>
+        </div>
+
+        <div id="textEntry" class="entry-pane">
+          <label for="taskInput" class="field-label">Your brain dump</label>
+          <textarea id="taskInput" rows="5"
+            placeholder="I have a JavaScript assignment due tonight, a lab exam on Monday that needs 3 hours, and an IoT project with no fixed deadline..."></textarea>
+
+          <div class="example-row">
+            <span>Try an example:</span>
+            <button type="button" class="prompt-chip"
+              data-prompt="JavaScript assignment due tomorrow, 2 hours, high priority">Assignment due tomorrow</button>
+            <button type="button" class="prompt-chip"
+              data-prompt="Embedded systems lab exam due Friday, 3 hours, high priority">Lab exam on Friday</button>
+          </div>
+
+          <button id="organizeBtn" class="primary-btn" type="button">
+            Organize my workload <span>→</span>
+          </button>
+          <p id="inputMessage" class="message" aria-live="polite"></p>
+        </div>
+
+        <form id="manualForm" class="entry-pane hidden">
+          <div class="form-grid">
+            <div class="field full-width">
+              <label for="manualTitle">Task name *</label>
+              <input id="manualTitle" type="text" maxlength="100"
+                placeholder="e.g. Digital Communication project" required>
+            </div>
+            <div class="field">
+              <label for="manualDate">Deadline</label>
+              <input id="manualDate" type="date">
+            </div>
+            <div class="field">
+              <label for="manualHours">Estimated hours</label>
+              <input id="manualHours" type="number" min="0.25" max="100"
+                step="0.25" placeholder="e.g. 2">
+            </div>
+            <div class="field">
+              <label for="manualPriority">Priority</label>
+              <select id="manualPriority">
+                <option value="3">High</option>
+                <option value="2" selected>Normal</option>
+                <option value="1">Low</option>
+              </select>
+            </div>
+          </div>
+          <button class="primary-btn" type="submit">Add task to dashboard →</button>
+          <p id="manualMessage" class="message" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section id="reviewSection" class="panel review-panel hidden">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">QUICK REVIEW</p>
+            <h2>Did I understand you correctly?</h2>
+            <p class="muted">Check the task details before adding them to your dashboard.</p>
+          </div>
+          <span id="reviewCount" class="count-pill">0 items</span>
+        </div>
+        <div id="reviewList" class="review-list"></div>
+        <div class="button-row">
+          <button id="cancelReviewBtn" class="secondary-btn" type="button">Cancel</button>
+          <button id="confirmTasksBtn" class="primary-btn" type="button">Confirm and add tasks →</button>
+        </div>
+      </section>
+
+      <section class="planning-layout" id="planner">
+        <div class="panel plan-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">YOUR NEXT STEPS</p>
+              <h2>Suggested focus</h2>
+            </div>
+            <button id="replanBtn" class="text-btn" type="button">↻ Replan</button>
+          </div>
+          <p id="planSummary" class="plan-summary">Add your tasks to build a realistic plan.</p>
+
+          <div class="capacity-box">
+            <div>
+              <label for="capacityInput">Study hours available today</label>
+              <p class="muted small">Used to keep today's plan realistic.</p>
+            </div>
+            <input id="capacityInput" type="number" min="0.5" max="24"
+              step="0.5" value="4">
+          </div>
+          <div id="capacityWarning" class="capacity-warning hidden"></div>
+
+          <div id="planList" class="plan-list"></div>
+          <div id="emptyPlan" class="empty-state">
+            <span>✦</span>
+            <p>Your recommended next steps will appear here.</p>
+          </div>
+        </div>
+
+        <div class="panel insight-panel">
+          <p class="eyebrow">WORKLOAD INSIGHT</p>
+          <h2>A realistic plan beats a perfect plan.</h2>
+          <p class="muted">Deadline Rescue weighs deadline urgency, priority and estimated effort to help you decide what deserves attention first.</p>
+          <div class="insight-divider"></div>
+          <div class="insight-item">
+            <span class="insight-dot rose-dot"></span>
+            <div><strong>Urgency</strong><p>Overdue and near deadlines move up the list.</p></div>
+          </div>
+          <div class="insight-item">
+            <span class="insight-dot mint-dot"></span>
+            <div><strong>Importance</strong><p>Higher-priority work receives more weight.</p></div>
+          </div>
+          <div class="insight-item">
+            <span class="insight-dot lilac-dot"></span>
+            <div><strong>Available time</strong><p>The plan stops when your daily study capacity is reached.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel tasks-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">EVERYTHING IN ONE PLACE</p>
+            <h2>Your task list</h2>
+            <p class="muted">Track progress, adjust estimates, or remove tasks.</p>
+          </div>
+          <span id="taskCount" class="count-pill">0 tasks</span>
+        </div>
+
+        <div class="task-toolbar">
+          <input id="searchInput" type="search" placeholder="Search tasks...">
+          <select id="filterSelect" aria-label="Filter tasks">
+            <option value="all">All tasks</option>
+            <option value="open">Open tasks</option>
+            <option value="urgent">Need attention</option>
+            <option value="done">Completed</option>
+          </select>
+        </div>
+
+        <div id="taskList" class="task-list"></div>
+        <div id="emptyTasks" class="empty-state">
+          <span>☘</span>
+          <p>Your tasks will appear here once you add them.</p>
+        </div>
+      </section>
+
+      <footer class="page-footer">
+        <span>Deadline Rescue</span>
+        <span id="saveStatus">Ready when you are.</span>
+      </footer>
+    </main>
+  </div>
+
+  <template id="reviewTemplate">
+    <article class="review-card">
+      <div class="review-top">
+        <span class="review-number"></span>
+        <button type="button" class="remove-review" aria-label="Remove task">×</button>
+      </div>
+      <div class="field">
+        <label>Task name</label>
+        <input class="review-title" type="text" maxlength="100" required>
+      </div>
+      <div class="review-fields">
+        <div class="field">
+          <label>Deadline</label>
+          <input class="review-date" type="date">
+        </div>
+        <div class="field">
+          <label>Hours</label>
+          <input class="review-hours" type="number" min="0.25" max="100" step="0.25" placeholder="Optional">
+        </div>
+        <div class="field">
+          <label>Priority</label>
+          <select class="review-priority">
+            <option value="3">High</option>
+            <option value="2">Normal</option>
+            <option value="1">Low</option>
+          </select>
+        </div>
+      </div>
+      <p class="review-warning"></p>
+    </article>
+  </template>
+
+  <div id="editModal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Edit Task</h2>
+
+    <form id="editTaskForm">
+      <label for="editTitle">Task name</label>
+      <input id="editTitle" required />
+
+      <label for="editDueDate">Deadline</label>
+      <input id="editDueDate" type="date" />
+
+      <label for="editHours">Estimated hours</label>
+      <input id="editHours" type="number" min="0.5" step="0.5" />
+
+      <label for="editPriority">Priority</label>
+      <select id="editPriority">
+        <option value="3">High</option>
+        <option value="2">Normal</option>
+        <option value="1">Low</option>
+      </select>
+
+      <label for="editProgress">Progress (%)</label>
+      <input
+        id="editProgress"
+        type="number"
+        min="0"
+        max="100"
+        step="10"
+      />
+
+      <div class="modal-actions">
+        <button type="submit">Save Changes</button>
+        <button type="button" id="cancelEdit">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>
